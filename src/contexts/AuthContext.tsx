@@ -22,8 +22,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setUser(session?.user ?? null);
+      
+      // Si l'utilisateur vient de s'inscrire, on vérifie que son profil existe
+      if (session?.user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+          
+        if (!profile) {
+          // Si le profil n'existe pas, on le crée avec les metadata de l'utilisateur
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .insert([{
+              id: session.user.id,
+              username: session.user.user_metadata.username,
+              created_at: new Date().toISOString()
+            }]);
+            
+          if (profileError) {
+            console.error('Error creating profile:', profileError);
+          }
+        }
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -35,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signUp = async (email: string, password: string, username: string) => {
-    // First check if username is already taken
+    // Vérifie d'abord si le nom d'utilisateur est déjà pris
     const { data: existingUser, error: checkError } = await supabase
       .from('profiles')
       .select('username')
@@ -50,32 +74,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw new Error('Username is already taken');
     }
 
-    // Proceed with sign up if username is available
-    const { error: signUpError, data } = await supabase.auth.signUp({ 
-      email, 
+    // Procède à l'inscription si le nom d'utilisateur est disponible
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
       password,
       options: {
         data: {
-          username // Store username in auth metadata
+          username // Stocke le nom d'utilisateur dans les metadata
         }
       }
     });
-    
-    if (signUpError) {
-      throw signUpError;
-    }
+
+    if (signUpError) throw signUpError;
 
     if (data.user) {
+      // Crée immédiatement le profil
       const { error: profileError } = await supabase
         .from('profiles')
-        .insert([{ 
-          id: data.user.id, 
+        .insert([{
+          id: data.user.id,
           username,
           created_at: new Date().toISOString()
         }]);
-      
+
       if (profileError) {
-        // If profile creation fails, we should clean up the auth user
+        // Si la création du profil échoue, on nettoie l'utilisateur auth
         await supabase.auth.admin.deleteUser(data.user.id);
         throw new Error('Failed to create profile');
       }
