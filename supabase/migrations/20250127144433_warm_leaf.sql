@@ -1,26 +1,3 @@
-/*
-  # Initial Schema Setup for Twitter Clone
-
-  1. New Tables
-    - `profiles`
-      - `id` (uuid, primary key) - References auth.users
-      - `username` (text, unique)
-      - `display_name` (text)
-      - `avatar_url` (text)
-      - `created_at` (timestamp)
-    - `tweets`
-      - `id` (uuid, primary key)
-      - `user_id` (uuid) - References profiles
-      - `content` (text)
-      - `created_at` (timestamp)
-      - `likes_count` (integer)
-
-  2. Security
-    - Enable RLS on all tables
-    - Add policies for authenticated users
-*/
-
--- Create profiles table
 CREATE TABLE profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id),
     username TEXT UNIQUE NOT NULL,
