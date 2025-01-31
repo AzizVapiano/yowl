@@ -1,39 +1,57 @@
 import React from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Home, User, LogOut } from 'lucide-react';
+import { supabase } from '../lib/supabase';
+import { Twitter, Home, User, LogOut } from 'lucide-react';
 
-export default function Layout() {
-  const { signOut } = useAuth();
+export function Layout() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/auth');
+  };
 
   return (
-    <div className="min-h-screen bg-black">
-      <nav className="border-b border-gray-800">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="flex justify-between h-16">
-            <div className="flex">
-              <Link to="/" className="flex items-center px-2 py-2 text-white hover:text-gray-300">
-                <span className="text-2xl font-bold">Y</span>
+    <div className="min-h-screen bg-gray-100">
+      <nav className="bg-white shadow-sm">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <Link to="/" className="text-blue-500">
+                <Twitter className="w-8 h-8" />
               </Link>
             </div>
             <div className="flex items-center space-x-4">
-              <Link to="/" className="p-2 text-gray-400 hover:text-white">
-                <Home size={24} />
-              </Link>
-              <Link to="/profile/me" className="p-2 text-gray-400 hover:text-white">
-                <User size={24} />
-              </Link>
-              <button
-                onClick={() => signOut()}
-                className="p-2 text-gray-400 hover:text-white"
-              >
-                <LogOut size={24} />
-              </button>
+              {user ? (
+                <>
+                  <Link to="/" className="text-gray-700 hover:text-blue-500">
+                    <Home className="w-6 h-6" />
+                  </Link>
+                  <Link to="/profile" className="text-gray-700 hover:text-blue-500">
+                    <User className="w-6 h-6" />
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="text-gray-700 hover:text-blue-500"
+                  >
+                    <LogOut className="w-6 h-6" />
+                  </button>
+                </>
+              ) : (
+                <Link
+                  to="/auth"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600"
+                >
+                  Se connecter
+                </Link>
+              )}
             </div>
           </div>
         </div>
       </nav>
-      <main className="max-w-2xl mx-auto px-4 py-8">
+      <main className="max-w-6xl mx-auto px-4 py-6">
         <Outlet />
       </main>
     </div>

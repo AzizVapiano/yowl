@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { Twitter } from 'lucide-react';
 
@@ -11,6 +11,7 @@ export function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [acceptCgu, setAcceptCgu] = useState(false);
   const navigate = useNavigate();
 
   const isAtLeast18 = (birthDate: string) => {
@@ -40,6 +41,11 @@ export function Auth() {
         });
         if (signInError) throw signInError;
       } else {
+        // Vérifier l'acceptation des CGU
+        if (!acceptCgu) {
+          throw new Error('Vous devez accepter les conditions générales d\'utilisation pour créer un compte.');
+        }
+
         // Vérifier l'âge avant l'inscription
         if (!isAtLeast18(dateOfBirth)) {
           throw new Error('Vous devez avoir au moins 18 ans pour créer un compte.');
@@ -50,7 +56,11 @@ export function Auth() {
           email,
           password,
           options: {
-            data: { username }, // 👈 Envoie le username directement dans Supabase
+            data: { 
+              username,
+              acceptedCgu: true,
+              acceptedCguDate: new Date().toISOString()
+            },
           }
         });
 
@@ -59,11 +69,12 @@ export function Auth() {
       
       navigate('/');
     } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Une erreur est survenue.');
+      }
+    }};
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -121,6 +132,23 @@ export function Auth() {
                 <p className="text-sm text-gray-500 mt-1">
                   Vous devez avoir au moins 18 ans pour créer un compte
                 </p>
+              </div>
+              <div className="mb-4">
+                <div className="flex items-start">
+                  <input
+                    type="checkbox"
+                    checked={acceptCgu}
+                    onChange={(e) => setAcceptCgu(e.target.checked)}
+                    className="mt-1"
+                    required
+                  />
+                  <label className="ml-2 text-sm text-gray-700">
+                    J'accepte les{' '}
+                    <Link to="/Cgu" className="text-blue-500 hover:underline" target="_blank">
+                      conditions générales d'utilisation
+                    </Link>
+                  </label>
+                </div>
               </div>
             </>
           )}

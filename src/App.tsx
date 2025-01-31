@@ -1,27 +1,25 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Home } from './pages/Home';
+import { Auth } from './pages/Auth';
+import { Layout } from './components/Layout';
 import { AuthProvider } from './contexts/AuthContext';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Feed from './pages/Feed';
-import Profile from './pages/Profile';
-import Layout from './components/Layout';
-import PrivateRoute from './components/PrivateRoute';
+import Conditions from "./pages/Cgu";
+
+
+
 
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <Router>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
-            <Route index element={<Feed />} />
-            <Route path="/profile/:username" element={<Profile />} />
+        <Route path="/Cgu" element={< Conditions />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
           </Route>
-          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </BrowserRouter>
+      </Router>
     </AuthProvider>
   );
 }
