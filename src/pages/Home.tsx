@@ -82,7 +82,7 @@ export function Home() {
                 type="submit"
                 className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600"
               >
-                Tweeter
+                Yowler
               </button>
             </form>
           )}
