@@ -1,8 +1,7 @@
-import React from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
-import { Twitter, Home, User, LogOut } from 'lucide-react';
+import { Home, User, LogOut } from 'lucide-react';
 
 export function Layout() {
   const { user } = useAuth();
@@ -19,8 +18,8 @@ export function Layout() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <Link to="/" className="text-blue-500">
-                <Twitter className="w-8 h-8" />
+              <Link to="/" className="text-black-500 text-4xl font-bold">
+                Y
               </Link>
             </div>
             <div className="flex items-center space-x-4">

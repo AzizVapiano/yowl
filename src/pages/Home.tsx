@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { motion } from 'framer-motion';
 import Footer from './Footer';
 
 interface Tweet {
@@ -75,21 +76,30 @@ export function Home() {
                 value={newTweet}
                 onChange={(e) => setNewTweet(e.target.value)}
                 className="w-full p-4 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Quoi de neuf ?"
+                placeholder="Dites-nous tout..."
                 rows={3}
               />
               <button
                 type="submit"
-                className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600"
+                className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-full"
               >
-                Tweeter
+                Yowler
               </button>
             </form>
           )}
 
-          <div className="space-y-4">
+          <motion.div className="space-y-4" initial="hidden" animate="show" variants={{
+            hidden: { opacity: 0, y: 20 },
+            show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+          }}>
             {tweets.map((tweet) => (
-              <div key={tweet.id} className="bg-white p-4 rounded-lg shadow">
+              <motion.div 
+                key={tweet.id} 
+                className="bg-white p-4 rounded-lg shadow"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
                 <div className="flex items-center mb-2">
                   <img
                     src={tweet.profiles.avatar_url || `https://ui-avatars.com/api/?name=${tweet.profiles.username}`}
@@ -105,9 +115,9 @@ export function Home() {
                 <p className="text-gray-500 text-sm">
                   {format(new Date(tweet.created_at), 'PPp', { locale: fr })}
                 </p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </main>
       <Footer />
