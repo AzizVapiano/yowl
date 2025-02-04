@@ -3,7 +3,6 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import { motion } from 'framer-motion';
 import Footer from './Footer';
 
 interface Tweet {
@@ -16,6 +15,29 @@ interface Tweet {
     avatar_url: string;
   };
 }
+
+const renderContent = (content: string) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const segments = content.split(urlRegex);
+  const matches = content.match(urlRegex) || [];
+  
+  return segments.map((segment, index) => {
+    if (matches.includes(segment)) {
+      return (
+        <a
+          key={index}
+          href={segment}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 hover:text-blue-700 hover:underline"
+        >
+          {segment}
+        </a>
+      );
+    }
+    return segment;
+  });
+};
 
 export function Home() {
   const [tweets, setTweets] = useState<Tweet[]>([]);
@@ -81,25 +103,16 @@ export function Home() {
               />
               <button
                 type="submit"
-                className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-full"
+                className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600"
               >
                 Yowler
               </button>
             </form>
           )}
 
-          <motion.div className="space-y-4" initial="hidden" animate="show" variants={{
-            hidden: { opacity: 0, y: 20 },
-            show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
-          }}>
+          <div className="space-y-4">
             {tweets.map((tweet) => (
-              <motion.div 
-                key={tweet.id} 
-                className="bg-white p-4 rounded-lg shadow"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-              >
+              <div key={tweet.id} className="bg-white p-4 rounded-lg shadow">
                 <div className="flex items-center mb-2">
                   <img
                     src={tweet.profiles.avatar_url || `https://ui-avatars.com/api/?name=${tweet.profiles.username}`}
@@ -111,13 +124,18 @@ export function Home() {
                     <p className="text-gray-500">@{tweet.profiles.username}</p>
                   </div>
                 </div>
-                <p className="mb-2">{tweet.content}</p>
+                <p className="mb-2">{renderContent(tweet.content)}</p>
                 <p className="text-gray-500 text-sm">
                   {format(new Date(tweet.created_at), 'PPp', { locale: fr })}
                 </p>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+            {tweets.length === 0 && (
+              <div className="text-center py-8 text-gray-500">
+                Aucun tweet pour le moment
+              </div>
+            )}
+          </div>
         </div>
       </main>
       <Footer />
