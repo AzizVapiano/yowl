@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { motion } from 'framer-motion';
-import { FiEdit2, FiTrash2 } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiCheck, FiX } from 'react-icons/fi';
 import Footer from './Footer'; 
 
 interface Tweet {
@@ -24,12 +24,40 @@ interface Profile {
   avatar_url: string;
 }
 
+
+const renderContent = (content: string) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  
+  const segments: string[] = content.split(urlRegex);
+  const matches: string[] = content.match(urlRegex) ?? [];
+
+  return segments.map((segment, index) => {
+    if (matches.includes(segment)) {
+      return (
+        <a
+          key={index}
+          href={segment}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 hover:text-blue-700 hover:underline"
+        >
+          {segment}
+        </a>
+      );
+    }
+    return segment;
+  });
+};
+
+
 export function Profile() {
   const { user } = useAuth();
   const [tweets, setTweets] = useState<Tweet[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [editingTweetId, setEditingTweetId] = useState<string | null>(null);
+  const [editingTweetContent, setEditingTweetContent] = useState('');
   const [editForm, setEditForm] = useState({
     username: '',
     display_name: '',
@@ -126,6 +154,35 @@ export function Profile() {
     await fetchUserTweets();
   }
 
+  const startEditingTweet = (tweet: Tweet) => {
+    setEditingTweetId(tweet.id);
+    setEditingTweetContent(tweet.content);
+  };
+
+  const cancelEditingTweet = () => {
+    setEditingTweetId(null);
+    setEditingTweetContent('');
+  };
+
+  const handleUpdateTweet = async (tweetId: string) => {
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('tweets')
+      .update({ content: editingTweetContent })
+      .eq('id', tweetId)
+      .eq('user_id', user.id);
+
+    if (error) {
+      console.error('Error updating tweet:', error);
+      return;
+    }
+
+    setEditingTweetId(null);
+    setEditingTweetContent('');
+    await fetchUserTweets();
+  };
+
   if (!user || !profile) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
@@ -217,7 +274,7 @@ export function Profile() {
           )}
         </motion.div>
 
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Mes tweets</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-4">Mes Yowls</h2>
         <div className="space-y-4">
           {tweets.map((tweet, index) => (
             <motion.div
@@ -244,16 +301,52 @@ export function Profile() {
                       {format(new Date(tweet.created_at), 'PPp', { locale: fr })}
                     </span>
                   </div>
-                  <p className="mt-2 text-gray-900 whitespace-pre-wrap">{tweet.content}</p>
-                  <div className="flex justify-end mt-4">
-                    <button
-                      onClick={() => handleDeleteTweet(tweet.id)}
-                      className="flex items-center space-x-2 text-red-500 hover:text-red-700 transition-colors"
-                    >
-                      <FiTrash2 className="w-5 h-5" />
-                      <span>Supprimer</span>
-                    </button>
-                  </div>
+                  {editingTweetId === tweet.id ? (
+                    <div className="mt-2">
+                      <textarea
+                        value={editingTweetContent}
+                        onChange={(e) => setEditingTweetContent(e.target.value)}
+                        className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                        rows={3}
+                      />
+                      <div className="flex justify-end space-x-2 mt-2">
+                        <button
+                          onClick={cancelEditingTweet}
+                          className="flex items-center space-x-1 text-gray-500 hover:text-gray-700 transition-colors"
+                        >
+                          <FiX className="w-5 h-5" />
+                          <span>Annuler</span>
+                        </button>
+                        <button
+                          onClick={() => handleUpdateTweet(tweet.id)}
+                          className="flex items-center space-x-1 text-green-500 hover:text-green-700 transition-colors"
+                        >
+                          <FiCheck className="w-5 h-5" />
+                          <span>Enregistrer</span>
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="mt-2 text-gray-900 whitespace-pre-wrap">{renderContent(tweet.content)}</p>
+                  )}
+                  {editingTweetId !== tweet.id && (
+                    <div className="flex justify-end mt-4 space-x-4">
+                      <button
+                        onClick={() => startEditingTweet(tweet)}
+                        className="flex items-center space-x-2 text-blue-500 hover:text-blue-700 transition-colors"
+                      >
+                        <FiEdit2 className="w-5 h-5" />
+                        <span>Modifier</span>
+                      </button>
+                      <button
+                        onClick={() => handleDeleteTweet(tweet.id)}
+                        className="flex items-center space-x-2 text-red-500 hover:text-red-700 transition-colors"
+                      >
+                        <FiTrash2 className="w-5 h-5" />
+                        <span>Supprimer</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -265,8 +358,7 @@ export function Profile() {
           )}
         </div>
       </div>
-
-      <Footer /> {}
+      <Footer />
     </div>
   );
 }

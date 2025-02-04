@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Home } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface Section {
   title: string;
@@ -10,6 +10,7 @@ interface Section {
 
 const TermsOfService = () => {
   const [lastUpdate] = useState('31 janvier 2025');
+  const navigate = useNavigate();
   const [sections, setSections] = useState<Section[]>([
     {
       title: "1. Acceptation des conditions",
@@ -55,7 +56,6 @@ const TermsOfService = () => {
       content: "Nous nous réservons le droit de modifier ces conditions à tout moment. Toute modification sera communiquée aux utilisateurs et entrera en vigueur immédiatement après sa publication.",
       isOpen: false
     },
-    
   ]);
 
   const toggleSection = (index: number) => {
@@ -68,49 +68,60 @@ const TermsOfService = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Conditions d'utilisation de Y</h1>
-        <p className="text-gray-600">Dernière mise à jour : {lastUpdate}</p>
-      </div>
-
-      <div className="mb-6">
-        <p className="text-lg">
-          Bienvenue sur Y, un réseau social respectueux de votre vie privée et conçu selon les principes 
-          du privacy by design. En utilisant Y, vous acceptez les 
-          présentes conditions d'utilisation.
-        </p>
-      </div>
-
-      <div className="space-y-4">
-        {sections.map((section, index) => (
-          <div key={index} className="border rounded-lg">
-            <button
-              onClick={() => toggleSection(index)}
-              className="w-full flex justify-between items-center p-4 text-left hover:bg-gray-50 transition-colors duration-150"
-            >
-              <span className="text-lg font-semibold">{section.title}</span>
-              {section.isOpen ? (
-                <ChevronUp className="h-5 w-5 text-gray-500" />
-              ) : (
-                <ChevronDown className="h-5 w-5 text-gray-500" />
-              )}
-            </button>
-            
-            {section.isOpen && (
-              <div className="p-4 pt-0 text-gray-700 transition-all duration-200">
-                {section.content}
-              </div>
-            )}
+    <div className="max-w-4xl mx-auto p-6">
+      <div className="bg-white rounded-lg shadow">
+        <div className="p-6">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold mb-2">Conditions d'utilisation de Y</h1>
+            <p className="text-gray-600">Dernière mise à jour : {lastUpdate}</p>
           </div>
-        ))}
-      </div>
 
-      <div className="mt-8 text-center text-gray-600">
-        <p>
-          Merci d'utiliser Y et de respecter ces conditions afin de garantir une expérience 
-          sécurisée et agréable pour tous.
-        </p>
+          <div className="mb-6">
+            <p className="text-lg">
+              Bienvenue sur Y, un réseau social respectueux de votre vie privée et conçu selon les principes 
+              du privacy by design. En utilisant Y, vous acceptez les 
+              présentes conditions d'utilisation.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {sections.map((section, index) => (
+              <div key={index} className="border rounded-lg">
+                <button
+                  onClick={() => toggleSection(index)}
+                  className="w-full flex justify-between items-center p-4 text-left hover:bg-gray-50 transition-colors duration-150"
+                >
+                  <span className="text-lg font-semibold">{section.title}</span>
+                  {section.isOpen ? (
+                    <ChevronUp className="h-5 w-5 text-gray-500" />
+                  ) : (
+                    <ChevronDown className="h-5 w-5 text-gray-500" />
+                  )}
+                </button>
+                
+                {section.isOpen && (
+                  <div className="p-4 pt-0 text-gray-700 transition-all duration-200">
+                    {section.content}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 text-center space-y-6">
+            <p className="text-gray-600">
+              Merci d'utiliser Y et de respecter ces conditions afin de garantir une expérience 
+              sécurisée et agréable pour tous.
+            </p>
+            <button
+              onClick={() => navigate('/')}
+              className="inline-flex items-center space-x-2 px-6 py-3 bg-black text-white rounded-full hover:bg-gray-600 transition-colors"
+            >
+              <Home className="w-5 h-5" />
+              <span>Retour à l'accueil</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

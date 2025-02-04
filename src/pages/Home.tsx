@@ -1,10 +1,59 @@
 import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import { motion } from 'framer-motion';
 import Footer from './Footer';
+import { Link } from 'react-router-dom';
+
+const CookiePopup = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const hasConsented = localStorage.getItem('cookieConsent');
+    if (!hasConsented) {
+      setIsVisible(true);
+    }
+  }, []);
+
+  const handleAccept = () => {
+    localStorage.setItem('cookieConsent', 'true');
+    setIsVisible(false);
+  };
+
+  const handleDecline = () => {
+    localStorage.setItem('cookieConsent', 'false');
+    setIsVisible(false);
+  };
+
+  return (
+    isVisible && (
+      <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-auto md:w-96 bg-gray-800 text-white p-4 rounded-lg shadow-lg z-50">
+        <p className="text-sm">
+          Nous utilisons des cookies pour améliorer votre expérience. En continuant, vous acceptez notre{' '}
+          <Link to="/Cgu" className="text-blue-400 underline hover:text-blue-600">
+            politique de confidentialité
+          </Link>.
+        </p>
+        <div className="flex justify-between mt-2">
+          <button
+            onClick={handleAccept}
+            className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-lg"
+          >
+            Accepter
+          </button>
+          <button
+            onClick={handleDecline}
+            className="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg"
+          >
+            Refuser
+          </button>
+        </div>
+      </div>
+    )
+  );
+};
 
 interface Tweet {
   id: string;
@@ -16,6 +65,29 @@ interface Tweet {
     avatar_url: string;
   };
 }
+
+const renderContent = (content: string) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const matches = (content.match(urlRegex) || []) as string[];
+  const segments = content.split(urlRegex);
+
+  return segments.map((segment, index) => {
+    if (matches.includes(segment)) {
+      return (
+        <a
+          key={index}
+          href={segment}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 hover:text-blue-700 hover:underline"
+        >
+          {segment}
+        </a>
+      );
+    }
+    return segment;
+  });
+};
 
 export function Home() {
   const [tweets, setTweets] = useState<Tweet[]>([]);
@@ -75,30 +147,28 @@ export function Home() {
               <textarea
                 value={newTweet}
                 onChange={(e) => setNewTweet(e.target.value)}
-                className="w-full p-4 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-4 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-gray-600"
                 placeholder="Dites-nous tout..."
                 rows={3}
               />
               <button
                 type="submit"
-                className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-full"
+                className="mt-2 bg-black text-white px-4 py-2 rounded-full hover:bg-gray-600"
               >
                 Yowler
               </button>
             </form>
           )}
 
-          <motion.div className="space-y-4" initial="hidden" animate="show" variants={{
-            hidden: { opacity: 0, y: 20 },
-            show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
-          }}>
+          <div className="space-y-4">
             {tweets.map((tweet) => (
-              <motion.div 
-                key={tweet.id} 
+              <motion.div
+                key={tweet.id}
                 className="bg-white p-4 rounded-lg shadow"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
               >
                 <div className="flex items-center mb-2">
                   <img
@@ -111,16 +181,22 @@ export function Home() {
                     <p className="text-gray-500">@{tweet.profiles.username}</p>
                   </div>
                 </div>
-                <p className="mb-2">{tweet.content}</p>
+                <p className="mb-2">{renderContent(tweet.content)}</p>
                 <p className="text-gray-500 text-sm">
                   {format(new Date(tweet.created_at), 'PPp', { locale: fr })}
                 </p>
               </motion.div>
             ))}
-          </motion.div>
+            {tweets.length === 0 && (
+              <div className="text-center py-8 text-gray-500">
+                Aucun tweet pour le moment
+              </div>
+            )}
+          </div>
         </div>
       </main>
       <Footer />
+      <CookiePopup />
     </div>
   );
 }
