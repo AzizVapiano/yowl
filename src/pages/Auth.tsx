@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import Footer from './Footer'; 
 
+
 export function Auth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

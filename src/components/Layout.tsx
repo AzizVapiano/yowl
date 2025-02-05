@@ -25,15 +25,15 @@ export function Layout() {
             <div className="flex items-center space-x-4">
               {user ? (
                 <>
-                  <Link to="/" className="text-gray-700 hover:text-blue-500">
+                  <Link to="/" className="text-gray-700 hover:text-gray-500">
                     <Home className="w-6 h-6" />
                   </Link>
-                  <Link to="/profile" className="text-gray-700 hover:text-blue-500">
+                  <Link to="/profile" className="text-gray-700 hover:text-gray-500">
                     <User className="w-6 h-6" />
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="text-gray-700 hover:text-blue-500"
+                    className="text-gray-700 hover:text-gray-500"
                   >
                     <LogOut className="w-6 h-6" />
                   </button>
