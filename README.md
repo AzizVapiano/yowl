@@ -12,8 +12,8 @@ Suivez ces étapes pour installer et exécuter le projet en local :
 
 ### 1️⃣ Cloner le dépôt
 ```sh
-git clone https://github.com/votre-utilisateur/y.git
-cd y
+git clone https://github.com/AzizVapiano/yowl.git
+cd yowl
 ```
 
 ### 2️⃣ Installer les dépendances
