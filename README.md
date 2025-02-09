@@ -4,7 +4,7 @@ Bienvenue sur **Y**, votre nouveau réseau social  ! 🚀
 
 ## 📌 Prérequis
 Avant de commencer, assurez-vous d'avoir installé :
-- [Node.js](https://nodejs.org/) (version recommandée : LTS)
+- [Node.js](https://nodejs.org/) 
 
 ## 🚀 Installation
 Suivez ces étapes pour installer et exécuter le projet en local :
