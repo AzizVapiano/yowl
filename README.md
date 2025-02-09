@@ -5,7 +5,6 @@ Bienvenue sur **Y**, votre nouveau réseau social  ! 🚀
 ## 📌 Prérequis
 Avant de commencer, assurez-vous d'avoir installé :
 - [Node.js](https://nodejs.org/) (version recommandée : LTS)
-- [Git](https://git-scm.com/)
 
 ## 🚀 Installation
 Suivez ces étapes pour installer et exécuter le projet en local :
