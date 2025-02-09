@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
   # Add insert policy for profiles
 
@@ -6,6 +7,8 @@
     
   Note: This policy ensures users can only create a profile with their own user ID
 */
+=======
+>>>>>>> quentin
 
 CREATE POLICY "Users can insert their own profile"
     ON profiles 

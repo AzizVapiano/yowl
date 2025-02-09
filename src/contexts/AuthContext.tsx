@@ -4,8 +4,12 @@ import type { User } from '@supabase/supabase-js';
 
 interface AuthContextType {
   user: User | null;
+<<<<<<< HEAD
   loading: boolean;
 }
+=======
+  loading: boolean;}
+>>>>>>> quentin
 
 const AuthContext = createContext<AuthContextType>({ user: null, loading: true });
 

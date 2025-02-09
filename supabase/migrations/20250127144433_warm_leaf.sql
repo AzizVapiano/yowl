@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
   # Initial Schema Setup for Twitter Clone
 
@@ -21,6 +22,9 @@
 */
 
 -- Create profiles table
+=======
+
+>>>>>>> quentin
 CREATE TABLE profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id),
     username TEXT UNIQUE NOT NULL,
@@ -29,7 +33,10 @@ CREATE TABLE profiles (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
+<<<<<<< HEAD
 -- Create tweets table
+=======
+>>>>>>> quentin
 CREATE TABLE tweets (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES profiles(id) NOT NULL,
@@ -38,11 +45,17 @@ CREATE TABLE tweets (
     likes_count INTEGER DEFAULT 0
 );
 
+<<<<<<< HEAD
 -- Enable RLS
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tweets ENABLE ROW LEVEL SECURITY;
 
 -- Profiles policies
+=======
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tweets ENABLE ROW LEVEL SECURITY;
+
+>>>>>>> quentin
 CREATE POLICY "Public profiles are viewable by everyone"
     ON profiles FOR SELECT
     USING (true);
@@ -51,7 +64,10 @@ CREATE POLICY "Users can update own profile"
     ON profiles FOR UPDATE
     USING (auth.uid() = id);
 
+<<<<<<< HEAD
 -- Tweets policies
+=======
+>>>>>>> quentin
 CREATE POLICY "Tweets are viewable by everyone"
     ON tweets FOR SELECT
     USING (true);
