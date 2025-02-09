@@ -25,7 +25,7 @@ npm i
 npm run dev
 ```
 
-Le projet sera accessible sur `http://localhost:3000/` par défaut.
+Le projet sera accessible sur `http://localhost:3073/` par défaut.
 
 
 ## 🤝 Bievenue sur Y ! 
