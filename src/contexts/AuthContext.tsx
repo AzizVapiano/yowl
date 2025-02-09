@@ -4,8 +4,7 @@ import type { User } from '@supabase/supabase-js';
 
 interface AuthContextType {
   user: User | null;
-  loading: boolean;
-}
+  loading: boolean;}
 
 const AuthContext = createContext<AuthContextType>({ user: null, loading: true });
 

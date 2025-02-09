@@ -41,7 +41,7 @@ export function Layout() {
               ) : (
                 <Link
                   to="/auth"
-                  className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600"
+                  className="bg-gray-500 text-white px-4 py-2 rounded-full hover:bg-gray-600"
                 >
                   Se connecter
                 </Link>

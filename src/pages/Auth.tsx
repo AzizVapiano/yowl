@@ -22,11 +22,8 @@ export function Auth() {
     const monthDiff = today.getMonth() - birth.getMonth();
 
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-      age--;
-    }
-
-    return age >= 18;
-  };
+      age--;}
+    return age >= 18;};
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,17 +34,12 @@ export function Auth() {
       if (isLogin) {
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
-          password,
-        });
-        if (signInError) throw signInError;
-      } else {
+          password, });
+        if (signInError) throw signInError; } else {
         if (!acceptCgu) {
-          throw new Error('Vous devez accepter les conditions générales d\'utilisation pour créer un compte.');
-        }
-
+          throw new Error('Vous devez accepter les conditions générales d\'utilisation pour créer un compte.'); }
         if (!isAtLeast18(dateOfBirth)) {
-          throw new Error('Vous devez avoir au moins 18 ans pour créer un compte.');
-        }
+          throw new Error('Vous devez avoir au moins 18 ans pour créer un compte.');}
 
         const { error: authError } = await supabase.auth.signUp({
           email,
@@ -56,23 +48,14 @@ export function Auth() {
             data: {
               username,
               acceptedCgu: true,
-              acceptedCguDate: new Date().toISOString(),
-            },
-          },
-        });
-
-        if (authError) throw authError;
-      }
-
-      navigate('/');
-    } catch (err) {
+              acceptedCguDate: new Date().toISOString(), },},});
+        if (authError) throw authError;}
+      navigate('/');} 
+      catch (err) {
       if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('Une erreur est survenue.');
-      }
-    }
-  };
+        setError(err.message);} 
+        else {
+        setError('Une erreur est survenue.'); }} };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
@@ -81,31 +64,24 @@ export function Auth() {
           <div className="flex justify-center mb-6">
             <span className="text-black text-4xl font-bold w-12 h-12 flex items-center justify-center">
               Y
-            </span>
-          </div>
+            </span> </div>
           <h2 className="text-2xl font-bold mb-6 text-center">
             {isLogin ? 'Se connecter' : 'Créer un compte'}
           </h2>
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-              {error}
-            </div>
-          )}
+              {error} </div> )}
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2">
-                Email
-              </label>
+                Email </label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            {!isLogin && (
-              <>
+                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
+                required/> </div>
+            {!isLogin && ( <>
                 <div className="mb-4">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
                     Nom d'utilisateur
@@ -114,26 +90,22 @@ export function Auth() {
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
+                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    required />
                 </div>
                 <div className="mb-4">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Date de naissance
-                  </label>
+                    Date de naissance </label>
                   <input
                     type="date"
                     value={dateOfBirth}
                     onChange={(e) => setDateOfBirth(e.target.value)}
                     max={new Date().toISOString().split('T')[0]}
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
+                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    required />
                   <p className="text-sm text-gray-500 mt-1">
                     Vous devez avoir au moins 18 ans pour créer un compte
-                  </p>
-                </div>
+                  </p>  </div>
                 <div className="mb-4">
                   <div className="flex items-start">
                     <input
@@ -141,48 +113,28 @@ export function Auth() {
                       checked={acceptCgu}
                       onChange={(e) => setAcceptCgu(e.target.checked)}
                       className="mt-1"
-                      required
-                    />
+                      required />
                     <label className="ml-2 text-sm text-gray-700">
                       J'accepte les{' '}
                       <Link to="/Cgu" className="text-blue-500 hover:underline" target="_blank">
                         conditions générales d'utilisation
-                      </Link>
-                    </label>
-                  </div>
-                </div>
-              </>
-            )}
+                      </Link> </label>  </div> </div> </> )}
             <div className="mb-6">
               <label className="block text-gray-700 text-sm font-bold mb-2">
-                Mot de passe
-              </label>
+                Mot de passe </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
+                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-gray-500"
+                required/> </div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 disabled:opacity-50 mb-4"
-            >
-              {loading ? 'Chargement...' : (isLogin ? 'Se connecter' : 'S\'inscrire')}
-            </button>
+              className="w-full bg-gray-500 text-white py-2 px-4 rounded-full hover:bg-gray-600 disabled:opacity-50 mb-4"  >
+              {loading ? 'Chargement...' : (isLogin ? 'Se connecter' : 'S\'inscrire')}</button>
             <button
               type="button"
               onClick={() => setIsLogin(!isLogin)}
-              className="w-full text-blue-500 text-sm hover:underline"
-            >
-              {isLogin ? 'Pas de compte ? Créer un compte' : 'Déjà un compte ? Se connecter'}
-            </button>
-          </form>
-        </div>
-      </div>
-      <Footer /> {}
-    </div>
-  );
-}
+              className="w-full text-gray-500 text-sm hover:underline" >
+              {isLogin ? 'Pas de compte ? Créer un compte' : 'Déjà un compte ? Se connecter'} </button></form> </div> </div> <Footer /> {} </div>);}

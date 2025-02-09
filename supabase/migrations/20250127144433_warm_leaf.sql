@@ -1,26 +1,4 @@
-/*
-  # Initial Schema Setup for Twitter Clone
 
-  1. New Tables
-    - `profiles`
-      - `id` (uuid, primary key) - References auth.users
-      - `username` (text, unique)
-      - `display_name` (text)
-      - `avatar_url` (text)
-      - `created_at` (timestamp)
-    - `tweets`
-      - `id` (uuid, primary key)
-      - `user_id` (uuid) - References profiles
-      - `content` (text)
-      - `created_at` (timestamp)
-      - `likes_count` (integer)
-
-  2. Security
-    - Enable RLS on all tables
-    - Add policies for authenticated users
-*/
-
--- Create profiles table
 CREATE TABLE profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id),
     username TEXT UNIQUE NOT NULL,
@@ -29,7 +7,6 @@ CREATE TABLE profiles (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Create tweets table
 CREATE TABLE tweets (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES profiles(id) NOT NULL,
@@ -38,11 +15,9 @@ CREATE TABLE tweets (
     likes_count INTEGER DEFAULT 0
 );
 
--- Enable RLS
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tweets ENABLE ROW LEVEL SECURITY;
 
--- Profiles policies
 CREATE POLICY "Public profiles are viewable by everyone"
     ON profiles FOR SELECT
     USING (true);
@@ -51,7 +26,6 @@ CREATE POLICY "Users can update own profile"
     ON profiles FOR UPDATE
     USING (auth.uid() = id);
 
--- Tweets policies
 CREATE POLICY "Tweets are viewable by everyone"
     ON tweets FOR SELECT
     USING (true);

@@ -10,23 +10,17 @@ import { FiImage } from 'react-icons/fi';
 
 const CookiePopup = () => {
   const [isVisible, setIsVisible] = useState(false);
-
   useEffect(() => {
     const hasConsented = localStorage.getItem('cookieConsent');
     if (!hasConsented) {
-      setIsVisible(true);
-    }
-  }, []);
-
+      setIsVisible(true);}}, []);
   const handleAccept = () => {
     localStorage.setItem('cookieConsent', 'true');
-    setIsVisible(false);
-  };
+    setIsVisible(false);};
 
   const handleDecline = () => {
     localStorage.setItem('cookieConsent', 'false');
-    setIsVisible(false);
-  };
+    setIsVisible(false);};
 
   return (
     isVisible && (
@@ -34,21 +28,13 @@ const CookiePopup = () => {
         <p className="text-sm">
           Nous utilisons des cookies pour améliorer votre expérience. En continuant, vous acceptez notre{' '}
           <Link to="/Cgu" className="text-blue-400 hover:text-blue-600">
-            politique de confidentialité
-          </Link>.
+            politique de confidentialité</Link>.
         </p>
         <div className="flex justify-between mt-2">
           <button onClick={handleAccept} className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-lg">
-            Accepter
-          </button>
+            Accepter</button>
           <button onClick={handleDecline} className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-lg">
-            Refuser
-          </button>
-        </div>
-      </div>
-    )
-  );
-};
+            Refuser</button> </div> </div> ));};
 
 interface Tweet {
   id: string;
@@ -59,9 +45,7 @@ interface Tweet {
     username: string;
     display_name: string;
     avatar_url: string;
-    certif: boolean;
-  };
-}
+    certif: boolean;};}
 
 const renderContent = (content: string) => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -76,16 +60,10 @@ const renderContent = (content: string) => {
           href={segment}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-500 hover:text-blue-700 hover:underline"
-        >
+          className="text-blue-500 hover:text-blue-700 hover:underline" >
           {segment}
-        </a>
-      );
-    }
-    return segment;
-  });
-};
-
+        </a> ); } 
+        return segment;});};
 export function Home() {
   const [tweets, setTweets] = useState<Tweet[]>([]);
   const [newTweet, setNewTweet] = useState('');
@@ -101,36 +79,25 @@ export function Home() {
     try {
       setUploadingImage(true);
       const file = event.target.files?.[0];
-      
       if (!file || !user) return;
       if (file.size > 5 * 1024 * 1024) {
         alert('Le fichier est trop volumineux. Maximum: 5MB');
-        return;
-      }
-
+        return;}
       const fileExt = file.name.split('.').pop();
       const fileName = `${user.id}-${Date.now()}.${fileExt}`;
       const filePath = `tweets/${fileName}`;
-
       const { error: uploadError } = await supabase.storage
         .from('upload')
         .upload(filePath, file);
-
       if (uploadError) throw uploadError;
-
       const { data } = supabase.storage
         .from('upload')
         .getPublicUrl(filePath);
-
-      setSelectedImage(data.publicUrl);
-
-    } catch (error) {
+      setSelectedImage(data.publicUrl);} 
+      catch (error) {
       console.error('Erreur upload:', error);
-      alert('Erreur lors de l\'upload');
-    } finally {
-      setUploadingImage(false);
-    }
-  }
+      alert('Erreur lors de l\'upload');} 
+      finally {setUploadingImage(false);}}
 
   async function fetchTweets() {
     const { data, error } = await supabase
@@ -148,40 +115,27 @@ export function Home() {
 
     if (error) {
       console.error('Error fetching tweets:', error);
-      return;
-    }
-
-    setTweets(data);
-  }
-
+      return;}
+    setTweets(data);}
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!user) return;
-
     const { error } = await supabase
       .from('tweets')
       .insert([
         { 
           content: newTweet, 
           user_id: user.id,
-          img_url: selectedImage 
-        }
-      ]);
-
+          img_url: selectedImage  } ]);
     if (error) {
       console.error('Error creating tweet:', error);
-      return;
-    }
-
+      return;}
     setNewTweet('');
     setSelectedImage(null);
-    fetchTweets();
-  }
+    fetchTweets();}
 
   const removeSelectedImage = () => {
-    setSelectedImage(null);
-  };
-
+    setSelectedImage(null);};
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow">
@@ -193,24 +147,18 @@ export function Home() {
                 onChange={(e) => setNewTweet(e.target.value)}
                 className="w-full p-4 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-gray-600"
                 placeholder="Dites-nous tout..."
-                rows={3}
-              />
+                rows={3} />
               {selectedImage && (
                 <div className="relative mt-2">
                   <img 
                     src={selectedImage} 
                     alt="Selected" 
-                    className="w-32 h-32 object-cover rounded-lg"
-                  />
+                    className="w-32 h-32 object-cover rounded-lg" />
                   <button
                     type="button"
                     onClick={removeSelectedImage}
                     className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
-                  >
-                    ×
-                  </button>
-                </div>
-              )}
+                  > </button> </div>)}
               <div className="mt-2 flex items-center justify-between">
                 <label className="flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 cursor-pointer">
                   <FiImage className="w-5 h-5 mr-2" />
@@ -220,20 +168,13 @@ export function Home() {
                     accept="image/*"
                     onChange={handleImageUpload}
                     className="hidden"
-                    disabled={uploadingImage}
-                  />
+                    disabled={uploadingImage} />
                 </label>
                 <button
                   type="submit"
                   className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-600"
-                  disabled={uploadingImage}
-                >
-                  Yowler
-                </button>
-              </div>
-            </form>
-          )}
-
+                  disabled={uploadingImage} >
+                  Yowler </button> </div> </form> )}
           <div className="space-y-4">
             {tweets.map((tweet) => (
               <motion.div
@@ -242,14 +183,12 @@ export function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.4, ease: 'easeOut' }}
-              >
+                transition={{ duration: 0.4, ease: 'easeOut' }} >
                 <div className="flex items-center mb-2">
                   <img
                     src={tweet.profiles.avatar_url || `https://ui-avatars.com/api/?name=${tweet.profiles.username}`}
                     alt={tweet.profiles.username}
-                    className="w-10 h-10 rounded-full mr-3"
-                  />
+                    className="w-10 h-10 rounded-full mr-3" />
                   <div>
                     <div className="flex items-center">
                       <p className="font-bold">{tweet.profiles.display_name}</p>
@@ -257,36 +196,16 @@ export function Home() {
                         <img
                           src="./verif.png"
                           alt="Compte vérifié"
-                          className="w-5 h-5 ml-1"
-                        />
-                      )}
-                    </div>
-                    <p className="text-gray-500">@{tweet.profiles.username}</p>
-                  </div>
-                </div>
+                          className="w-5 h-5 ml-1" />)} </div>
+                    <p className="text-gray-500">@{tweet.profiles.username}</p> </div> </div>
                 <p className="mb-2">{renderContent(tweet.content)}</p>
                 {tweet.img_url && (
                   <img
                     src={tweet.img_url}
                     alt="Tweet image"
-                    className="w-full h-auto rounded-lg mb-2"
-                  />
-                )}
+                    className="w-full h-auto rounded-lg mb-2" />)}
                 <p className="text-gray-500 text-sm">
-                  {format(new Date(tweet.created_at), 'PPp', { locale: fr })}
-                </p>
-              </motion.div>
-            ))}
+                  {format(new Date(tweet.created_at), 'PPp', { locale: fr })} </p> </motion.div> ))}
             {tweets.length === 0 && (
               <div className="text-center py-8 text-gray-500">
-                Aucun tweet pour le moment
-              </div>
-            )}
-          </div>
-        </div>
-      </main>
-      <Footer />
-      <CookiePopup />
-    </div>
-  );
-}
+                Aucun tweet pour le moment </div>)}</div> </div></main> <Footer /><CookiePopup /></div>);}
