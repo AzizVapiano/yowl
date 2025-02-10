@@ -8,7 +8,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import Footer from './Footer'; 
 
->>>>>>> quentin
+>>>>>>> Nino
 
 export function Auth() {
   const [email, setEmail] = useState('');
@@ -52,14 +52,12 @@ export function Auth() {
     try {
       if (isLogin) {
 <<<<<<< HEAD
-        // Handle login
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
         if (signInError) throw signInError;
       } else {
-        // Verify age for signup
         if (!isAtLeast18(dateOfBirth)) {
           throw new Error('Vous devez avoir au moins 18 ans pour créer un compte.');
         }
@@ -293,4 +291,4 @@ export function Auth() {
               onClick={() => setIsLogin(!isLogin)}
               className="w-full text-gray-500 text-sm hover:underline" >
               {isLogin ? 'Pas de compte ? Créer un compte' : 'Déjà un compte ? Se connecter'} </button></form> </div> </div> <Footer /> {} </div>);}
->>>>>>> quentin
+>>>>>>> Nino
