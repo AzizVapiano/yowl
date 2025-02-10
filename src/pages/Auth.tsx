@@ -21,7 +21,7 @@ export function Auth() {
 <<<<<<< HEAD
 =======
   const [acceptCgu, setAcceptCgu] = useState(false);
->>>>>>> quentin
+>>>>>>> Nino
   const navigate = useNavigate();
 
   const isAtLeast18 = (birthDate: string) => {
