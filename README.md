@@ -7,6 +7,8 @@ Avant de commencer, assurez-vous d'avoir installé :
 - [Node.js](https://nodejs.org/) 
 
 ## 🚀 Installation
+Le projet est disponible sur ce lien : https://yowlgrp1.netlify.app/
+Ou sinon,
 Suivez ces étapes pour installer et exécuter le projet en local :
 
 ### 1️⃣ Cloner le dépôt
